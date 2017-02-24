@@ -36,26 +36,74 @@ class http{
         }
     }
 
-    public static function post( $url ){
-        array_push( self::$http, ["url" => $url, "metodo" => "POST"]);
+    public static function post( $url , $controller ){
+        array_push( self::$http, ["url" => $url, "metodo" => "POST", "cont-func" => $controller]);
     }
 
-    public static function put( $url ){
-        array_push( self::$http, ["url" => $url, "metodo" => "PUT"]);
+    public static function put( $url , $controller ){
+        array_push( self::$http, ["url" => $url, "metodo" => "PUT", "cont-func" => $controller]);
     }
 
-    public static function get( $url ){
-        array_push( self::$http, ["url" => $url, "metodo" => "GET"]);
+    public static function get( $url , $controller ){
+        array_push( self::$http, ["url" => $url, "metodo" => "GET", "cont-func" => $controller]);
     }
    
-    public static function del( $url ){
-        array_push( self::$http, ["url" => $url, "metodo" => "DELETE"]);
+    public static function del( $url , $controller ){
+        array_push( self::$http, ["url" => $url, "metodo" => "DELETE", "cont-func" => $controller]);
+    }
+
+    protected static function atributeToController( $controller ){ // controller/atribute/$1/$2/$3
+        $class = "./controller/".$controller;
+                
+        if (file_exists($class.".php")) {
+            include_once($class.".php");
+        }else{ 
+            return false;
+        }        
+
+        if( class_exists("teste") ){
+            return "classe teste Existe";
+        } else {
+            return "classe teste Não Existe";
+        }
+    }
+
+    protected static function processa($url, $contFunc){
+        echo $url." - ".$contFunc;
     }
 
     public static function start(){
         $metodo = $_SERVER['REQUEST_METHOD'];
-        $url = $_SERVER['QUERY_STRING'];        
-        var_dump($url);
+        $url = $_SERVER['QUERY_STRING'];   
+        //var_dump( self::$http );
+
+        /*
+         * Verificar se a url solicitada está no array
+         * verificar se o controller existe
+         * retornar o que foi solicitado
+         */        
+        foreach(self::$http as $URLS){
+            $RotaDados = [];
+            foreach($URLS as $ky => $vl){                
+                if($ky === 'url'){
+                    if($url == $vl){
+                      $RotaDados['url'] = $vl;
+                    }                    
+                }
+                if($ky === 'cont-func'){
+                    $RotaDados['cont-func'] = $vl;
+                }
+                if($ky === 'metodo'){
+                    if($metodo == $vl){
+                      $RotaDados['metodo'] = $vl;
+                    }                    
+                }
+            }            
+            if (count($RotaDados) <= 3 && count($RotaDados) > 2){
+                self::processa($RotaDados['url'], $RotaDados['cont-func']);
+                break;
+            }            
+        }
     }
 
 }

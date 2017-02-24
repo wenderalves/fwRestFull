@@ -5,9 +5,7 @@ include_once('core/http.php');
 use http as ROTA;
 
 //rota
-ROTA::post('/incluir-cliente');
-ROTA::put('/cliente');
-ROTA::get('/listar-cliente');
-ROTA::del('/apagar-cliente');
+ROTA::get('', 'index@index');
+ROTA::get('i', 'teste@inicio'); //controller@atributo
 
 ROTA::start();

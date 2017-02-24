@@ -4,7 +4,7 @@
 */
 
 //url
-define('URL', 'localhost/restfull/');
+define('URL', 'localhost/fwrestfull/');
 
 //banco de dados DETALHES
 define('DB_TYPE', 'mysql');
